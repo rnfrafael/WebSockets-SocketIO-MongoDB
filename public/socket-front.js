@@ -6,12 +6,12 @@ function selecionaDocumento(tituloDocumento) {
   socket.emit("tipoDocumento", titulo);
 }
 
-function emitirTextoEditor(texto) {
-  socket.emit("textoEditor", texto);
+function emitirTextoNoCampoEditor(texto) {
+  socket.emit("textoDoCampoEditor", texto);
 }
 
 socket.on("textoEditorClientes", (texto) => {
   atualizaTextoEditor(texto);
 });
 
-export { emitirTextoEditor, atualizaTextoEditor, selecionaDocumento };
+export { emitirTextoNoCampoEditor, atualizaTextoEditor, selecionaDocumento };
