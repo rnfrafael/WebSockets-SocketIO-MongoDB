@@ -1,4 +1,8 @@
-import { emitirTextoEditor, selecionaDocumento } from "./socket-front.js";
+import {
+  emitirTextoEditor,
+  defineSalaEDocumento,
+  salvarTexto,
+} from "./socket-front.js";
 
 const socket = io();
 
@@ -10,10 +14,11 @@ const tituloDocumento = document.getElementById("titulo-documento");
 
 tituloDocumento.textContent = nomeDocumento || "Documento sem Titulo";
 
-selecionaDocumento(nomeDocumento);
+defineSalaEDocumento(nomeDocumento);
 
 campoTexto.addEventListener("keyup", () => {
-  emitirTextoEditor(campoTexto.value);
+  emitirTextoEditor({ content: campoTexto.value, name: nomeDocumento });
+  salvarTexto({ content: campoTexto.value, name: nomeDocumento });
 });
 
 function atualizaTextoEditor(texto) {
