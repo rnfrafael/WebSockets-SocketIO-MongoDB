@@ -9,10 +9,10 @@ const socket = io();
 const parametros = new URLSearchParams(window.location.search);
 const nomeDocumento = parametros.get("nome");
 
-const campoTexto = document.getElementById("editor-texto");
-const tituloDocumento = document.getElementById("titulo-documento");
+const elementoCampoTexto = document.getElementById("editor-texto");
+const tituloDocumentoNaPagina = document.getElementById("titulo-documento");
 
-tituloDocumento.textContent = nomeDocumento || "Documento sem Titulo";
+tituloDocumentoNaPagina.textContent = nomeDocumento || "Documento sem Titulo";
 
 defineSalaEDocumento(nomeDocumento);
 
@@ -22,7 +22,7 @@ campoTexto.addEventListener("keyup", () => {
 });
 
 function atualizaTextoEditor(texto) {
-  campoTexto.value = texto;
+  elementoCampoTexto.value = texto;
 }
 
 export { atualizaTextoEditor };
