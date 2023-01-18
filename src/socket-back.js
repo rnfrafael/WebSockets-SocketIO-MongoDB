@@ -1,6 +1,8 @@
 import io from "./server.js";
 import db from "./config/db.js";
-import SocketBackEndService from "./services/SocketBackEndService.js";
+import DocumentoController from "./controllers/DocumentosController.js";
+
+const documentoController = new DocumentoController();
 
 db.on("error", console.log.bind(console, "Erro de Conexão"));
 db.once("open", () => {
@@ -9,26 +11,24 @@ db.once("open", () => {
 
 io.on("connection", (socket) => {
   socket.on("obterListaDeDocumentos", async (devolverDocumentos) => {
-    const documentos = await SocketBackEndService.obterDocumentos();
+    const documentos = await documentoController.obterDocumentos();
     devolverDocumentos(documentos);
-    console.log("alo");
   });
 
   socket.on("novoDocumento", async (name, callback) => {
-    //console.log(name, "dentro do socket back end");
-    const documento = await SocketBackEndService.criaDocumento({
+    const documentoFoiCriado = await documentoController.criaDocumento({
       name: name,
       content: name,
     });
-    if (documento) {
-      callback(name);
-    }
+    documentoFoiCriado
+      ? io.emit("adicionaDocumentoIndex", name)
+      : callback(name);
   });
 
   socket.on("nomeSalaDocumento", async (roomDocumentName, callback) => {
     socket.join(roomDocumentName);
 
-    const texto = await SocketBackEndService.pegaTexto(roomDocumentName);
+    const texto = await documentoController.pegaTexto(roomDocumentName);
 
     callback(texto);
   });
@@ -38,6 +38,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("salvaTexto", ({ name, content }) => {
-    SocketBackEndService.atualizaTexto({ name, content });
+    documentoController.salvaDocumento({ name, content });
+  });
+
+  socket.on("apagaDocumento", async (documento) => {
+    const result = await documentoController.apagaDocumento(documento);
+    if (result.deletedCount) {
+      io.emit("apagaDocumentoFront", documento);
+    }
   });
 });

@@ -1,26 +1,34 @@
-import DocumentoController from "../controllers/DocumentosController.js";
+import documentos from "../models/Documentos.js";
 
 class SocketBackEndService {
-  static async atualizaTexto({ content, name }) {
-    DocumentoController.salvaDocumento({ content, name });
-    return true;
+  async salvaDocumento({ content, name }) {
+    const result = await documentos.findOneAndUpdate(
+      { name: name },
+      { content: content }
+    );
+    return result;
   }
 
-  static async pegaTexto(name) {
-    const documento = await DocumentoController.pegaDocumento(name);
-    if (!documento) {
-      console.log("erro");
-    } else {
-      return documento.content;
+  async pegaDocumento(name) {
+    return await documentos.findOne({ name: name });
+  }
+
+  async obterDocumentos() {
+    return await documentos.find();
+  }
+
+  async criaDocumento(documento) {
+    let novoDocumento = new documentos(documento);
+    try {
+      return await novoDocumento.save();
+    } catch (error) {
+      console.log(error);
+      return;
     }
   }
 
-  static async obterDocumentos() {
-    return await DocumentoController.obterDocumentos();
-  }
-
-  static async criaDocumento(documento) {
-    return await DocumentoController.criaDocumento(documento);
+  async apagaDocumento(name) {
+    return await documentos.deleteOne({ name: name });
   }
 }
 

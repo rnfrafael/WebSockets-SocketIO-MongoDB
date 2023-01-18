@@ -23,9 +23,18 @@ buttonEnviaDocumento.onclick = () => {
 };
 
 function insereLinkDocumento(nomeDocumento) {
-  listaDocumentos.innerHTML += `<a href="documento.html?nome=${nomeDocumento}" class="list-group-item list-group-item-action">
+  listaDocumentos.innerHTML += `<a href="documento.html?nome=${nomeDocumento}" id="doc-${nomeDocumento}" class="list-group-item list-group-item-action">
   ${nomeDocumento}
   </a>`;
 }
 
-export { insereLinkDocumento };
+function apagaLinkDocumento(name) {
+  const documento = document.getElementById(`doc-${name}`);
+  listaDocumentos.removeChild(documento);
+}
+
+function mostraAlertaDeErro(name) {
+  alert(`O documento de nome ${name} já existe, crie com outro nome`);
+}
+
+export { insereLinkDocumento, apagaLinkDocumento, mostraAlertaDeErro };
